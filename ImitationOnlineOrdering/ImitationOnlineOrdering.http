@@ -1,0 +1,6 @@
+@ImitationOnlineOrdering_HostAddress = http://localhost:5208
+
+GET {{ImitationOnlineOrdering_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
