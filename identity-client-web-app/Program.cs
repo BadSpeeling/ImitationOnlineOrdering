@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using System.IdentityModel.Tokens.Jwt;
+using identity_client_web_app.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,17 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .EnableTokenAcquisitionToCallDownstreamApi()
     .AddInMemoryTokenCaches();
 
+builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    // The claim in the Jwt token where App roles are available.
+    options.TokenValidationParameters.RoleClaimType = "roles";
+});
 
+// Adding authorization policies that enforce authorization using Azure AD roles.
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AppRoles.AuthorizationPolicies.AssignmentToRestaurantOwnerRequired, policy => policy.RequireRole(AppRoles.AppRole.RestaurantOwnerAll));
+});
 
 builder.Services.AddControllersWithViews(options =>
 {

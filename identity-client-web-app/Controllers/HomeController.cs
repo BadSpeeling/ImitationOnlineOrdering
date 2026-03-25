@@ -1,7 +1,8 @@
-using System.Diagnostics;
+using identity_client_web_app.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using identity_client_web_app.Models;
+using System.Diagnostics;
+using identity_client_web_app.Infrastructure;
 
 namespace identity_client_web_app.Controllers;
 
@@ -13,6 +14,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToRestaurantOwnerRequired)]
     public IActionResult Privacy()
     {
         return View();
