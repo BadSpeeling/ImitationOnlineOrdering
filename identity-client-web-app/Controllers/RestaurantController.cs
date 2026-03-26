@@ -9,11 +9,11 @@ using identity_client_web_app;
 
 namespace identity_client_web_app.Controllers
 {
-    public class RestaurantController : Controller
+    public class RestaurantController : OnlineOrderingController
     {
         private readonly OnlineOrderingDb _context;
 
-        public RestaurantController(OnlineOrderingDb context)
+        public RestaurantController(OnlineOrderingDb context, IHttpContextAccessor httpContext) : base(httpContext)
         {
             _context = context;
         }
