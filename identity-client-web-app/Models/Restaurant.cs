@@ -5,7 +5,7 @@
 
         public int RestaurantID { get; set; }
         public required string RestaurantName { get; set; }        
-        public Guid OwnerID { get; set; }
+        public Guid UserID { get; set; }
 
     }
 }

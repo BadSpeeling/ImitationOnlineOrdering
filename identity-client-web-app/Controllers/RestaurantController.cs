@@ -53,7 +53,7 @@ namespace identity_client_web_app.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RestaurantID,RestaurantName,OwnerID")] Restaurant restaurant)
+        public async Task<IActionResult> Create([Bind("RestaurantID,RestaurantName,UserID")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace identity_client_web_app.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName,OwnerID")] Restaurant restaurant)
+        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName,UserID")] Restaurant restaurant)
         {
             if (id != restaurant.RestaurantID)
             {

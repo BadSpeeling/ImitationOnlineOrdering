@@ -10,3 +10,7 @@
 /identity-client-web-app/obj
 /identity-client-web-app/identity-client-web-app.csproj.user
 /identity-client-web-app/identity-client-web-app.csproj.user
+/.vs/ImitationOnlineOrdering/CopilotIndices/18.4.111.64248
+/ImitationOnlineOrderingDatabase/bin/Debug
+/ImitationOnlineOrderingDatabase/obj/Debug
+/ImitationOnlineOrderingDatabase/ImitationOnlineOrderingDatabase.sqlproj.user
