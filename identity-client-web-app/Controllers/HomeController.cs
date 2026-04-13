@@ -7,8 +7,14 @@ using identity_client_web_app.Infrastructure;
 namespace identity_client_web_app.Controllers;
 
 [Authorize]
-public class HomeController : Controller
+public class HomeController : OnlineOrderingController
 {
+
+    public HomeController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    {
+
+    }
+
     public IActionResult Index()
     {
         return View();
@@ -17,6 +23,8 @@ public class HomeController : Controller
     [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToRestaurantOwnerRequired)]
     public IActionResult Privacy()
     {
+
+        ViewData["UserID"] = GetUserID();
         return View();
     }
 
