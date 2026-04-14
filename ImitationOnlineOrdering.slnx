@@ -1,6 +1,5 @@
 <Solution>
   <Project Path="identity-client-web-app/identity-client-web-app.csproj" />
-  <Project Path="ImitationOnlineOrdering/ImitationOnlineOrdering.csproj" />
   <Project Path="ImitationOnlineOrderingDatabase/ImitationOnlineOrderingDatabase.sqlproj" Id="32a6afda-eb9c-4e58-bc52-23dad9a5d478">
     <Build />
     <Deploy />
