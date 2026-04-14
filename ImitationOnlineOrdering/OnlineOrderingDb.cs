@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace identity_client_web_app
+namespace ImitationOnlineOrdering
 {
     public class OnlineOrderingDb : DbContext
     {

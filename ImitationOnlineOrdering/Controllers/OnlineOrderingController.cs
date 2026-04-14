@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace identity_client_web_app.Controllers
+namespace ImitationOnlineOrdering.Controllers
 {
     public class OnlineOrderingController : Controller
     {

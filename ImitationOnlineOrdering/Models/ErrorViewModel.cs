@@ -1,4 +1,4 @@
-namespace identity_client_web_app.Models;
+namespace ImitationOnlineOrdering.Models;
 
 public class ErrorViewModel
 {

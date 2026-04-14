@@ -1,10 +1,10 @@
-using identity_client_web_app.Models;
+using ImitationOnlineOrdering.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using identity_client_web_app.Infrastructure;
+using ImitationOnlineOrdering.Infrastructure;
 
-namespace identity_client_web_app.Controllers;
+namespace ImitationOnlineOrdering.Controllers;
 
 [Authorize]
 public class HomeController : OnlineOrderingController

@@ -1,4 +1,4 @@
-﻿namespace identity_client_web_app.Infrastructure
+﻿namespace ImitationOnlineOrdering.Infrastructure
 {
     public class AppRoles
     {

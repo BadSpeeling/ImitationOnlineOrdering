@@ -1,5 +1,5 @@
-﻿using identity_client_web_app;
-using identity_client_web_app.Infrastructure;
+﻿using ImitationOnlineOrdering;
+using ImitationOnlineOrdering.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace identity_client_web_app.Controllers
+namespace ImitationOnlineOrdering.Controllers
 {
     public class RestaurantController : OnlineOrderingController
     {
