@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using identity_client_web_app;
+using identity_client_web_app.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using identity_client_web_app;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace identity_client_web_app.Controllers
 {
@@ -53,8 +55,11 @@ namespace identity_client_web_app.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RestaurantID,RestaurantName,UserID")] Restaurant restaurant)
+        public async Task<IActionResult> Create([Bind("RestaurantName")] Restaurant restaurant)
         {
+
+            restaurant.UserID = GetUserID();
+
             if (ModelState.IsValid)
             {
                 _context.Add(restaurant);
