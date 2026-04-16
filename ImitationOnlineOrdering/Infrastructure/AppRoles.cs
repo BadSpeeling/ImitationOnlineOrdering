@@ -5,12 +5,12 @@
 
         public static class AppRole
         {
-            public const string RestaurantOwnerAll = "RestaurantOwner.All";
+            public const string FranchiseOwner = "FranchiseOwner";
         }
 
         public static class AuthorizationPolicies
         {
-            public const string AssignmentToRestaurantOwnerRequired = "AssignmentToRestaurantOwnerRequired";
+            public const string AssignmentToFranchiseOwnerRequired = "AssignmentToFranchiseOwnerRequired";
         }
 
     }

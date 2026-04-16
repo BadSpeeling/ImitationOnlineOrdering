@@ -68,6 +68,7 @@ namespace ImitationOnlineOrdering.Controllers
         }
 
         // GET: Restaurant/Create
+        [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public IActionResult Create()
         {
             return View();
@@ -78,6 +79,7 @@ namespace ImitationOnlineOrdering.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> Create([Bind("RestaurantName")] Restaurant restaurant)
         {
 
@@ -100,6 +102,7 @@ namespace ImitationOnlineOrdering.Controllers
         }
 
         // GET: Restaurant/Edit/5
+        [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -130,6 +133,7 @@ namespace ImitationOnlineOrdering.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName")] Restaurant restaurant)
         {
             if (id != restaurant.RestaurantID)
@@ -160,6 +164,7 @@ namespace ImitationOnlineOrdering.Controllers
         }
 
         // GET: Restaurant/Delete/5
+        [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -189,6 +194,7 @@ namespace ImitationOnlineOrdering.Controllers
         // POST: Restaurant/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 

@@ -20,7 +20,7 @@ public class HomeController : OnlineOrderingController
         return View();
     }
 
-    [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToRestaurantOwnerRequired)]
+    [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
     public IActionResult Privacy()
     {
 

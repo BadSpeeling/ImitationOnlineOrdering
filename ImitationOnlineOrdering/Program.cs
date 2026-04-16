@@ -36,7 +36,7 @@ builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.Authentic
 // Adding authorization policies that enforce authorization using Azure AD roles.
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(AppRoles.AuthorizationPolicies.AssignmentToRestaurantOwnerRequired, policy => policy.RequireRole(AppRoles.AppRole.RestaurantOwnerAll));
+    options.AddPolicy(AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired, policy => policy.RequireRole(AppRoles.AppRole.FranchiseOwner));
 });
 
 builder.Services.AddControllersWithViews(options =>
