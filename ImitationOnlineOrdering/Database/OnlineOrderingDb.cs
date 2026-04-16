@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ImitationOnlineOrdering;
+using Microsoft.EntityFrameworkCore;
 
-namespace ImitationOnlineOrdering
+namespace ImitationOnlineOrdering.Database
 {
     public class OnlineOrderingDb : DbContext
     {

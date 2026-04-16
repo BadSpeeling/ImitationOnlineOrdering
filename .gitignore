@@ -6,11 +6,10 @@
 /ImitationOnlineOrdering/obj
 /.vs/ImitationOnlineOrdering/CopilotIndices/18.3.511.5503
 /ImitationOnlineOrdering/bin/Debug/net10.0
-/identity-client-web-app/bin/Debug/net10.0
-/identity-client-web-app/obj
-/identity-client-web-app/identity-client-web-app.csproj.user
-/identity-client-web-app/identity-client-web-app.csproj.user
 /.vs/ImitationOnlineOrdering/CopilotIndices/18.4.111.64248
 /ImitationOnlineOrderingDatabase/bin/Debug
 /ImitationOnlineOrderingDatabase/obj/Debug
 /ImitationOnlineOrderingDatabase/ImitationOnlineOrderingDatabase.sqlproj.user
+/.vs/ProjectEvaluation
+/ImitationOnlineOrderingTest/obj
+/ImitationOnlineOrderingTest/bin/Debug/net10.0

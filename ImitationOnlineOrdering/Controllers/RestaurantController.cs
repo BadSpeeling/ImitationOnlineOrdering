@@ -1,11 +1,13 @@
-﻿using ImitationOnlineOrdering;
+﻿using ImitationOnlineOrdering.Database;
 using ImitationOnlineOrdering.Infrastructure;
+using ImitationOnlineOrdering.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,19 +15,31 @@ namespace ImitationOnlineOrdering.Controllers
 {
     public class RestaurantController : OnlineOrderingController
     {
-        private readonly OnlineOrderingDb _context;
+        private readonly RestaurantDbHandler restaurantHandler;
 
-        public RestaurantController(OnlineOrderingDb context, IHttpContextAccessor httpContext) : base(httpContext)
+        public RestaurantController(RestaurantDbHandler restaurantHandler, IHttpContextAccessor httpContext) : base(httpContext)
         {
-            _context = context;
+            this.restaurantHandler = restaurantHandler;
         }
 
         // GET: Restaurant
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Restaurant.ToListAsync());
-        }
 
+            List<Restaurant> restaurants;
+
+            try
+            {
+                restaurants = await restaurantHandler.GetRestaurants();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
+            return View(restaurants);
+
+        }
         // GET: Restaurant/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -34,14 +48,23 @@ namespace ImitationOnlineOrdering.Controllers
                 return NotFound();
             }
 
-            var restaurant = await _context.Restaurant
-                .FirstOrDefaultAsync(m => m.RestaurantID == id);
+            Restaurant? restaurant;
+
+            try
+            {
+                restaurant = await restaurantHandler.GetRestaurant(id.Value);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
             if (restaurant == null)
             {
                 return NotFound();
             }
 
-            return View(restaurant);
+            return View(restaurant);            
         }
 
         // GET: Restaurant/Create
@@ -62,8 +85,15 @@ namespace ImitationOnlineOrdering.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(restaurant);
-                await _context.SaveChangesAsync();
+
+                try { 
+                    await restaurantHandler.PostRestaurant(restaurant);
+                }
+                catch (Exception ex)
+                {
+                    return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(restaurant);
@@ -77,7 +107,17 @@ namespace ImitationOnlineOrdering.Controllers
                 return NotFound();
             }
 
-            var restaurant = await _context.Restaurant.FindAsync(id);
+            Restaurant? restaurant;
+
+            try
+            { 
+                restaurant = await restaurantHandler.GetRestaurant(id.Value);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
             if (restaurant == null)
             {
                 return NotFound();
@@ -90,7 +130,7 @@ namespace ImitationOnlineOrdering.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName,UserID")] Restaurant restaurant)
+        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName")] Restaurant restaurant)
         {
             if (id != restaurant.RestaurantID)
             {
@@ -101,12 +141,11 @@ namespace ImitationOnlineOrdering.Controllers
             {
                 try
                 {
-                    _context.Update(restaurant);
-                    await _context.SaveChangesAsync();
+                    await restaurantHandler.PutRestaurant(restaurant);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RestaurantExists(restaurant.RestaurantID))
+                    if (!(await restaurantHandler.RestaurantExists(id)))
                     {
                         return NotFound();
                     }
@@ -128,8 +167,17 @@ namespace ImitationOnlineOrdering.Controllers
                 return NotFound();
             }
 
-            var restaurant = await _context.Restaurant
-                .FirstOrDefaultAsync(m => m.RestaurantID == id);
+            Restaurant? restaurant;
+
+            try
+            {
+                restaurant = await restaurantHandler.GetRestaurant(id.Value);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
             if (restaurant == null)
             {
                 return NotFound();
@@ -143,19 +191,18 @@ namespace ImitationOnlineOrdering.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var restaurant = await _context.Restaurant.FindAsync(id);
-            if (restaurant != null)
+
+            try
             {
-                _context.Restaurant.Remove(restaurant);
+                await restaurantHandler.DeleteRestaurant(id);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RestaurantExists(int id)
-        {
-            return _context.Restaurant.Any(e => e.RestaurantID == id);
-        }
     }
 }
