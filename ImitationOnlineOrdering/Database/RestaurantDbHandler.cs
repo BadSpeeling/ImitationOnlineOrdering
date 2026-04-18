@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ImitationOnlineOrdering.Models;
 
 namespace ImitationOnlineOrdering.Database
 {
@@ -19,7 +20,7 @@ namespace ImitationOnlineOrdering.Database
 
         public async Task<Restaurant?> GetRestaurant (int id)
         {
-            return await dbContext.Restaurant.FirstOrDefaultAsync(r => r.RestaurantID == id);
+            return await dbContext.Restaurant.Include(r => r.MenuItems).FirstOrDefaultAsync(r => r.RestaurantID == id);
         }
 
         public async Task PostRestaurant (Restaurant restaurant)

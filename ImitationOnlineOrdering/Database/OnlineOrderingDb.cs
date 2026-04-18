@@ -1,4 +1,4 @@
-﻿using ImitationOnlineOrdering;
+﻿using ImitationOnlineOrdering.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImitationOnlineOrdering.Database
@@ -7,7 +7,7 @@ namespace ImitationOnlineOrdering.Database
     {
 
         public DbSet<Restaurant> Restaurant => Set<Restaurant>();
-        //public DbSet<MenuItem> MenuItem => Set<MenuItem>();
+        public DbSet<MenuItem> MenuItem => Set<MenuItem>();
 
         public OnlineOrderingDb(DbContextOptions<OnlineOrderingDb> options) : base(options)
         {
