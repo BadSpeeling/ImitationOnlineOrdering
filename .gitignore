@@ -13,3 +13,5 @@
 /.vs/ProjectEvaluation
 /ImitationOnlineOrderingTest/obj
 /ImitationOnlineOrderingTest/bin/Debug/net10.0
+/ImitationOnlineOrderingDatabase/ImitationOnlineOrderingDatabase.dbmdl
+/ImitationOnlineOrderingDatabase/ImitationOnlineOrderingDatabase.jfm

@@ -60,5 +60,6 @@
   <ItemGroup>
     <Build Include="Restaurant.sql" />
     <Build Include="MenuItem.sql" />
+    <Build Include="Franchise.sql" />
   </ItemGroup>
 </Project>
