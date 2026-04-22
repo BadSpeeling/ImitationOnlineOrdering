@@ -8,7 +8,8 @@ namespace ImitationOnlineOrdering.Models
         public int RestaurantID { get; set; }
         [Display(Name = "Restaurant Name")]
         public required string RestaurantName { get; set; }        
-        public Guid UserID { get; set; }
+        public Guid? RestaurantManagerUserID { get; set; }
+        public int FranchiseID { get; set; }
         public ICollection<MenuItem>? MenuItems { get; set; }
 
         public Restaurant Clone ()
@@ -17,7 +18,8 @@ namespace ImitationOnlineOrdering.Models
             {
                 RestaurantID = RestaurantID,
                 RestaurantName = RestaurantName,
-                UserID = UserID,
+                RestaurantManagerUserID = RestaurantManagerUserID,
+                FranchiseID = FranchiseID,
                 MenuItems = MenuItems?.Select(m => m.Clone()).ToList(),
             };
         }

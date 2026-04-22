@@ -2,7 +2,7 @@
 	[RestaurantID] [int] IDENTITY(1,1) NOT NULL,
 	[RestaurantName] [nvarchar](200) NOT NULL,
 	[FranchiseID] [int] NOT NULL,
-	[RestaurantOwnerUserID] [uniqueidentifier] NULL,
+	[RestaurantManagerUserID] [uniqueidentifier] NULL,
 	CONSTRAINT [PK_Restuarant] PRIMARY KEY CLUSTERED 
 	(
 		[RestaurantID] ASC

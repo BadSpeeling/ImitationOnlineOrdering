@@ -8,6 +8,7 @@ namespace ImitationOnlineOrdering.Database
 
         public DbSet<Restaurant> Restaurant => Set<Restaurant>();
         public DbSet<MenuItem> MenuItem => Set<MenuItem>();
+        public DbSet<Franchise> Franchise => Set<Franchise>();
 
         public OnlineOrderingDb(DbContextOptions<OnlineOrderingDb> options) : base(options)
         {
