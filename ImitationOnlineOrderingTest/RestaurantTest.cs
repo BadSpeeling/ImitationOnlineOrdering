@@ -88,7 +88,7 @@ namespace ImitationOnlineOrderingTest
         }
 
         [TestMethod]
-        public async Task TestPutRestaurant()
+        public async Task TestPatchRestaurant()
         {
 
             var restaurant = await testInitializers.CreateRestaurant();
@@ -96,14 +96,14 @@ namespace ImitationOnlineOrderingTest
             var dbContext = GetContext();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
-            await restaurantHandler.PutRestaurant(new Restaurant() { 
+            await restaurantHandler.PatchRestaurant(new Restaurant() { 
                 RestaurantID = restaurant.RestaurantID,
-                RestaurantName = "Eric's Sorbet Palace",
-                RestaurantManagerUserID = restaurant.RestaurantManagerUserID,
-                FranchiseID = restaurant.FranchiseID,
+                RestaurantName = "Eric's Sorbet Palace"
             });
 
-            Assert.AreEqual("Eric's Sorbet Palace", dbContext.Restaurant.Find(restaurant.RestaurantID)?.RestaurantName);
+            var efRestaurant = dbContext.Restaurant.Find(restaurant.RestaurantID);
+            Assert.AreEqual("Eric's Sorbet Palace", efRestaurant?.RestaurantName);
+            Assert.IsNotNull(efRestaurant?.RestaurantManagerUserID);
 
         }
 

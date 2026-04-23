@@ -29,15 +29,22 @@ namespace ImitationOnlineOrdering.Database
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task PutFranchise(Franchise franchise)
+        public async Task PatchFranchise(Franchise franchise)
         {
-            if (!(await FranchiseExists(franchise.FranchiseID)))
+
+            var efFranchise = await GetFranchise(franchise.FranchiseID);
+
+            if (efFranchise == null)
             {
                 throw new Exception($"Cannot update Franchise {franchise.FranchiseID} that does not exist");
             }
 
-            dbContext.Franchise.Update(franchise);
+            if (franchise.FranchiseName != null && !franchise.FranchiseName.Equals(efFranchise.FranchiseName)) { 
+                efFranchise.FranchiseName = franchise.FranchiseName;
+            }
+
             await dbContext.SaveChangesAsync();
+
         }
 
         public async Task DeleteFranchise(int franchiseID)

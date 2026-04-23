@@ -31,15 +31,21 @@ namespace ImitationOnlineOrdering.Database
 
         }
 
-        public async Task PutRestaurant (Restaurant restaurant) 
+        public async Task PatchRestaurant (Restaurant restaurant) 
         {
 
-            if (!(await RestaurantExists(restaurant.RestaurantID)))
+            var efRestaurant = await GetRestaurant(restaurant.RestaurantID);
+
+            if (efRestaurant == null)
             {
                 throw new Exception($"Cannot update Restaurant {restaurant.RestaurantID} that does not exist");
             }
 
-            dbContext.Restaurant.Update(restaurant);            
+            if (restaurant.RestaurantName != null && !restaurant.RestaurantName.Equals(efRestaurant.RestaurantName))
+            {
+                efRestaurant.RestaurantName = restaurant.RestaurantName;
+            }
+            
             await dbContext.SaveChangesAsync();
 
         }

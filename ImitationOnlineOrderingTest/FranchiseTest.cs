@@ -71,14 +71,17 @@ namespace ImitationOnlineOrderingTest
             var dbContext = GetContext();
             var franchiseHandler = new FranchiseDbHandler(dbContext);
 
-            await franchiseHandler.PutFranchise(new Franchise()
+            await franchiseHandler.PatchFranchise(new Franchise()
             {
                 FranchiseID = franchise.FranchiseID,
                 FranchiseName = "Eric's New Franchise",
-                FranchiseOwnerUserID = franchise.FranchiseOwnerUserID
             });
 
-            Assert.AreEqual("Eric's New Franchise", dbContext.Franchise.Find(franchise.FranchiseID)?.FranchiseName);
+            var currentFranchise = dbContext.Franchise.Find(franchise.FranchiseID);
+
+            Assert.AreEqual("Eric's New Franchise", currentFranchise?.FranchiseName);
+            Assert.IsNotNull(currentFranchise?.FranchiseOwnerUserID);
+
         }
 
         [TestMethod]
