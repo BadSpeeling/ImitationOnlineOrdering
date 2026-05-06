@@ -14,7 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<OnlineOrderingDb>(opt => opt.UseSqlServer("Server=DESKTOP-LREGU2K\\SQLEXPRESS;Trusted_Connection=True;TrustServerCertificate=True;Initial Catalog=ImitationOnlineOrdering"));
+builder.Services.AddScoped<IIdentity, CloudIdentity>();
 builder.Services.AddScoped<RestaurantDbHandler>();
+builder.Services.AddScoped<FranchiseDbHandler>();
 
 // This is required to be instantiated before the OpenIdConnectOptions starts getting configured.
 // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
@@ -65,6 +67,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Franchise}/{action=Index}/{id?}");
 
 app.Run();

@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace ImitationOnlineOrdering.Controllers
+﻿namespace ImitationOnlineOrdering.Infrastructure
 {
-    public class OnlineOrderingController : Controller
+    public class CloudIdentity : IIdentity
     {
 
         private IHttpContextAccessor _httpContextAccessor;
 
-        public OnlineOrderingController (IHttpContextAccessor httpContextAccessor)
+        public CloudIdentity(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        protected Guid GetUserID()
+        public Guid GetUserID()
         {
 
             if (_httpContextAccessor == null || _httpContextAccessor.HttpContext == null)
@@ -23,7 +21,7 @@ namespace ImitationOnlineOrdering.Controllers
             string oidValue;
 
             try
-            { 
+            {
                 oidValue = _httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == "oid").Value;
             }
             catch (Exception ex)
@@ -45,6 +43,7 @@ namespace ImitationOnlineOrdering.Controllers
             return userID;
 
         }
-
+    
     }
+
 }

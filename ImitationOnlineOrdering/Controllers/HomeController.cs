@@ -7,10 +7,10 @@ using ImitationOnlineOrdering.Infrastructure;
 namespace ImitationOnlineOrdering.Controllers;
 
 [Authorize]
-public class HomeController : OnlineOrderingController
+public class HomeController : Controller
 {
 
-    public HomeController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public HomeController()
     {
 
     }
@@ -23,8 +23,6 @@ public class HomeController : OnlineOrderingController
     [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
     public IActionResult Privacy()
     {
-
-        ViewData["UserID"] = GetUserID();
         return View();
     }
 

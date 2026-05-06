@@ -1,48 +1,42 @@
-﻿using ImitationOnlineOrdering.Database;
+using ImitationOnlineOrdering.Database;
 using ImitationOnlineOrdering.Infrastructure;
 using ImitationOnlineOrdering.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ImitationOnlineOrdering.Controllers
 {
-    public class RestaurantController : Controller
+    public class FranchiseController : Controller
     {
-        private readonly RestaurantDbHandler RestaurantHandler;
+        private readonly FranchiseDbHandler FranchiseHandler;
         private readonly IIdentity Identity;
 
-        public RestaurantController(RestaurantDbHandler restaurantHandler, IIdentity identity)
+        public FranchiseController(FranchiseDbHandler franchiseHandler, IIdentity identity)
         {
-            RestaurantHandler = restaurantHandler;
+            FranchiseHandler = franchiseHandler;
             Identity = identity;
         }
 
-        // GET: Restaurant
+        // GET: Franchise
         public async Task<IActionResult> Index()
         {
-
-            List<Restaurant> restaurants;
+            List<Franchise> franchises;
 
             try
             {
-                restaurants = await RestaurantHandler.GetRestaurants();
+                franchises = await FranchiseHandler.GetFranchises(Identity.GetUserID());
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            return View(restaurants);
-
+            return View(franchises);
         }
-        // GET: Restaurant/Details/5
+
+        // GET: Franchise/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -50,48 +44,45 @@ namespace ImitationOnlineOrdering.Controllers
                 return NotFound();
             }
 
-            Restaurant? restaurant;
+            Franchise? franchise;
 
             try
             {
-                restaurant = await RestaurantHandler.GetRestaurant(id.Value);
+                franchise = await FranchiseHandler.GetFranchise(id.Value);
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            if (restaurant == null)
+            if (franchise == null)
             {
                 return NotFound();
             }
 
-            return View(restaurant);            
+            return View(franchise);
         }
 
-        // GET: Restaurant/Create
+        // GET: Franchise/Create
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Restaurant/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Franchise/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Create([Bind("RestaurantName")] Restaurant restaurant)
+        public async Task<IActionResult> Create([Bind("FranchiseName")] Franchise franchise)
         {
-
-            restaurant.RestaurantManagerUserID = Identity.GetUserID();
+            franchise.FranchiseOwnerUserID = Identity.GetUserID();
 
             if (ModelState.IsValid)
             {
-
-                try { 
-                    await RestaurantHandler.PostRestaurant(restaurant);
+                try
+                {
+                    await FranchiseHandler.PostFranchise(franchise);
                 }
                 catch (Exception ex)
                 {
@@ -100,10 +91,10 @@ namespace ImitationOnlineOrdering.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(restaurant);
+            return View(franchise);
         }
 
-        // GET: Restaurant/Edit/5
+        // GET: Franchise/Edit/5
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -112,33 +103,31 @@ namespace ImitationOnlineOrdering.Controllers
                 return NotFound();
             }
 
-            Restaurant? restaurant;
+            Franchise? franchise;
 
             try
-            { 
-                restaurant = await RestaurantHandler.GetRestaurant(id.Value);
+            {
+                franchise = await FranchiseHandler.GetFranchise(id.Value);
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            if (restaurant == null)
+            if (franchise == null)
             {
                 return NotFound();
             }
-            return View(restaurant);
+            return View(franchise);
         }
 
-        // POST: Restaurant/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Franchise/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName")] RestaurantPatchCommand restaurant)
+        public async Task<IActionResult> Edit(int id, [Bind("FranchiseID,FranchiseName")] Franchise franchise)
         {
-            if (id != restaurant.RestaurantID)
+            if (id != franchise.FranchiseID)
             {
                 return NotFound();
             }
@@ -147,11 +136,14 @@ namespace ImitationOnlineOrdering.Controllers
             {
                 try
                 {
-                    await RestaurantHandler.PatchRestaurant(restaurant);
+                    await FranchiseHandler.PatchFranchise(new FranchisePatchCommand() { 
+                        FranchiseID = franchise.FranchiseID,
+                        FranchiseName = franchise.FranchiseName,
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!(await RestaurantHandler.RestaurantExists(id)))
+                    if (!(await FranchiseHandler.FranchiseExists(id)))
                     {
                         return NotFound();
                     }
@@ -162,10 +154,10 @@ namespace ImitationOnlineOrdering.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(restaurant);
+            return View(franchise);
         }
 
-        // GET: Restaurant/Delete/5
+        // GET: Franchise/Delete/5
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -174,35 +166,34 @@ namespace ImitationOnlineOrdering.Controllers
                 return NotFound();
             }
 
-            Restaurant? restaurant;
+            Franchise? franchise;
 
             try
             {
-                restaurant = await RestaurantHandler.GetRestaurant(id.Value);
+                franchise = await FranchiseHandler.GetFranchise(id.Value);
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            if (restaurant == null)
+            if (franchise == null)
             {
                 return NotFound();
             }
 
-            return View(restaurant);
+            return View(franchise);
         }
 
-        // POST: Restaurant/Delete/5
+        // POST: Franchise/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-
             try
             {
-                await RestaurantHandler.DeleteRestaurant(id);
+                await FranchiseHandler.DeleteFranchise(id);
             }
             catch (Exception ex)
             {
