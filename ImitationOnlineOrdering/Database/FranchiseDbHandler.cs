@@ -13,9 +13,9 @@ namespace ImitationOnlineOrdering.Database
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Franchise>> GetFranchises()
+        public async Task<List<Franchise>> GetFranchises(Guid franchiseOwnerUserID)
         {
-            return await dbContext.Franchise.ToListAsync();
+            return await dbContext.Franchise.Where(f => f.FranchiseOwnerUserID == franchiseOwnerUserID).ToListAsync();
         }
 
         public async Task<Franchise?> GetFranchise(int id)
@@ -29,7 +29,7 @@ namespace ImitationOnlineOrdering.Database
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task PatchFranchise(Franchise franchise)
+        public async Task PatchFranchise(FranchisePatchCommand franchise)
         {
 
             var efFranchise = await GetFranchise(franchise.FranchiseID);

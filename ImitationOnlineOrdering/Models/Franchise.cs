@@ -10,15 +10,5 @@ namespace ImitationOnlineOrdering.Models
         public required string FranchiseName { get; set; }
         public Guid? FranchiseOwnerUserID { get; set; }
 
-        public Franchise Clone()
-        {
-            return new Franchise()
-            {
-                FranchiseID = FranchiseID,
-                FranchiseName = FranchiseName,
-                FranchiseOwnerUserID = FranchiseOwnerUserID
-            };
-        }
-
     }
 }

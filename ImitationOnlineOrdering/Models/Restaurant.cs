@@ -12,17 +12,7 @@ namespace ImitationOnlineOrdering.Models
         public int FranchiseID { get; set; }
         public ICollection<MenuItem>? MenuItems { get; set; }
 
-        public Restaurant Clone ()
-        {
-            return new Restaurant()
-            {
-                RestaurantID = RestaurantID,
-                RestaurantName = RestaurantName,
-                RestaurantManagerUserID = RestaurantManagerUserID,
-                FranchiseID = FranchiseID,
-                MenuItems = MenuItems?.Select(m => m.Clone()).ToList(),
-            };
-        }
+        public Franchise? Franchise { get; set; }
 
     }
 }

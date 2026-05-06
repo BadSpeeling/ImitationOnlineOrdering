@@ -31,7 +31,7 @@ namespace ImitationOnlineOrdering.Database
 
         }
 
-        public async Task PatchRestaurant (Restaurant restaurant) 
+        public async Task PatchRestaurant (RestaurantPatchCommand restaurant) 
         {
 
             var efRestaurant = await GetRestaurant(restaurant.RestaurantID);

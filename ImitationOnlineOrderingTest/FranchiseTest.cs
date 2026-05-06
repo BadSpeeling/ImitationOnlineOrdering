@@ -1,49 +1,45 @@
+using ImitationOnlineOrdering.Controllers;
 using ImitationOnlineOrdering.Database;
+using ImitationOnlineOrdering.Infrastructure;
 using ImitationOnlineOrdering.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace ImitationOnlineOrderingTest
 {
     [TestClass]
     public sealed class FranchiseTest
     {
-
-        private static Guid testUserID = Guid.NewGuid();
-        private TestInitializers testInitializers;
+        
+        private TestingDatabase testingDatabase;
+        private FakeIdentity authenticatedIdentity;
 
         public FranchiseTest()
         {
-            testInitializers = new TestInitializers(GetContext(), testUserID);
-        }
-
-        [ClassCleanup]
-        public static async Task ClassCleanup()
-        {
-            var dbContext = GetContext();
-            await dbContext.Franchise.Where(f => f.FranchiseOwnerUserID.Equals(testUserID)).ExecuteDeleteAsync();
+            authenticatedIdentity = new FakeIdentity();
+            testingDatabase = new TestingDatabase(authenticatedIdentity);            
         }
 
         [TestMethod]
         public async Task TestGetFranchises()
         {
-            var franchise = await testInitializers.CreateFranchise();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
             var franchiseHandler = new FranchiseDbHandler(dbContext);
-            var franchises = await franchiseHandler.GetFranchises();
+            var franchises = await franchiseHandler.GetFranchises(authenticatedIdentity.GetUserID());
 
-            Assert.IsGreaterThan(0, franchises.Count);
+            Assert.HasCount(1, franchises, $"Expect only 1 franchise, has {franchises.Count}");
         }
 
         [TestMethod]
         public async Task TestPostFranchise()
         {
-            var dbContext = GetContext();
-            var franchiseHandler = new FranchiseDbHandler(dbContext);
+            var dbContext = testingDatabase.CreateContext();
+            var franchiseHandler = new FranchiseDbHandler(dbContext);         
             var franchise = new Franchise()
             {
                 FranchiseName = "Eric's Franchises",
-                FranchiseOwnerUserID = testUserID,
+                FranchiseOwnerUserID = Guid.NewGuid(),
             };
 
             await franchiseHandler.PostFranchise(franchise);
@@ -54,9 +50,9 @@ namespace ImitationOnlineOrderingTest
         [TestMethod]
         public async Task TestGetFranchise()
         {
-            var franchise = await testInitializers.CreateFranchise();
+            var dbContext = testingDatabase.CreateContext();
+            var franchise = dbContext.Franchise.First();
 
-            var dbContext = GetContext();
             var franchiseHandler = new FranchiseDbHandler(dbContext);
 
             var foundFranchise = await franchiseHandler.GetFranchise(franchise.FranchiseID);
@@ -64,14 +60,14 @@ namespace ImitationOnlineOrderingTest
         }
 
         [TestMethod]
-        public async Task TestPutFranchise()
+        public async Task TestPatchFranchise()
         {
-            var franchise = await testInitializers.CreateFranchise();
+            var dbContext = testingDatabase.CreateContext();
+            var franchise = dbContext.Franchise.Where(f => f.FranchiseName == "PatchTest").First();
 
-            var dbContext = GetContext();
             var franchiseHandler = new FranchiseDbHandler(dbContext);
 
-            await franchiseHandler.PatchFranchise(new Franchise()
+            await franchiseHandler.PatchFranchise(new FranchisePatchCommand()
             {
                 FranchiseID = franchise.FranchiseID,
                 FranchiseName = "Eric's New Franchise",
@@ -87,22 +83,17 @@ namespace ImitationOnlineOrderingTest
         [TestMethod]
         public async Task TestDeleteFranchise()
         {
-            var franchise = await testInitializers.CreateFranchise();
 
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
+            var franchise = dbContext.Franchise.Where(f => f.FranchiseName == "DeleteTest").First();
+
+            Assert.IsNotNull(franchise);
+
             var franchiseHandler = new FranchiseDbHandler(dbContext);
 
             await franchiseHandler.DeleteFranchise(franchise.FranchiseID);
             Assert.IsNull(dbContext.Franchise.Find(franchise.FranchiseID));
-        }
 
-        public static OnlineOrderingDb GetContext()
-        {
-            return new OnlineOrderingDb(
-                new DbContextOptionsBuilder<OnlineOrderingDb>()
-                    .UseSqlServer("Server=DESKTOP-LREGU2K\\SQLEXPRESS;Trusted_Connection=True;TrustServerCertificate=True;Initial Catalog=ImitationOnlineOrdering")
-                    .Options
-            );
         }
 
     }

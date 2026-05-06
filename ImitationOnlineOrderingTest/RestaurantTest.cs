@@ -1,4 +1,5 @@
 ﻿using ImitationOnlineOrdering.Database;
+using ImitationOnlineOrdering.Infrastructure;
 using ImitationOnlineOrdering.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,29 +9,20 @@ namespace ImitationOnlineOrderingTest
     public sealed class RestaurantTest
     {
 
-        private static Guid testUserID = Guid.NewGuid();
-        private TestInitializers testInitializers;
+        private TestingDatabase testingDatabase;
+        private FakeIdentity authenticatedIdentity;
 
         public RestaurantTest ()
         {
-            testInitializers = new TestInitializers(GetContext(), testUserID);
-        }
-
-        [ClassCleanup]
-        public static async Task ClassCleanup()
-        {
-            var dbContext = GetContext();
-            await dbContext.Restaurant.Where(r => r.RestaurantManagerUserID.Equals(testUserID)).ExecuteDeleteAsync();
-            await dbContext.Franchise.Where(r => r.FranchiseOwnerUserID.Equals(testUserID)).ExecuteDeleteAsync();
+            authenticatedIdentity = new FakeIdentity();
+            testingDatabase = new TestingDatabase(authenticatedIdentity);
         }
 
         [TestMethod]
         public async Task TestGetRestaurants()
         {
 
-            var restaurant = await testInitializers.CreateRestaurant();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
             var restaurants = await restaurantHandler.GetRestaurants();
 
@@ -42,19 +34,19 @@ namespace ImitationOnlineOrderingTest
         public async Task TestPostRestaurant()
         {
 
-            var franchise = await testInitializers.CreateFranchise();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
+ 
+            var franchise = dbContext.Franchise.First();
             var restaurant = new Restaurant()
             {
                 RestaurantName = "Eric's Icecream Palace",
-                RestaurantManagerUserID = testUserID,
-                FranchiseID = franchise.FranchiseID
+                RestaurantManagerUserID = Guid.NewGuid(),
+                FranchiseID = franchise.FranchiseID,
+                Franchise = franchise,
             };
 
             await restaurantHandler.PostRestaurant(restaurant);
-
             Assert.IsGreaterThan(0, restaurant.RestaurantID);
 
         }
@@ -63,10 +55,12 @@ namespace ImitationOnlineOrderingTest
         public async Task TestGetRestaurant()
         {
 
-            var restaurant = await testInitializers.CreateRestaurant();
+            var dbContext = testingDatabase.CreateContext();
 
-            var dbContext = GetContext();
+            var restaurant = dbContext.Restaurant.First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
+
+            Assert.IsNotNull(restaurant, "No restaurants");
 
             var foundRestaurant = await restaurantHandler.GetRestaurant(restaurant.RestaurantID);
             Assert.IsNotNull(foundRestaurant);
@@ -74,15 +68,16 @@ namespace ImitationOnlineOrderingTest
         }
 
         [TestMethod]
-        public async Task TestGetRestaurantMenuItems()
+        public async Task TestGetRestaurantWithMenuItems()
         {
 
-            var restaurant = await testInitializers.CreateRestaurantWithMenuItems();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
+            var menuItem = dbContext.MenuItem.First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
-            var efRestaurant = await restaurantHandler.GetRestaurant(restaurant.RestaurantID);
+            Assert.IsNotNull(menuItem, "MenuItem cannot be null");
+
+            var efRestaurant = await restaurantHandler.GetRestaurant(menuItem.RestaurantID);
             Assert.IsNotNull(efRestaurant?.MenuItems?.FirstOrDefault());
 
         }
@@ -91,12 +86,12 @@ namespace ImitationOnlineOrderingTest
         public async Task TestPatchRestaurant()
         {
 
-            var restaurant = await testInitializers.CreateRestaurant();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
+            var restaurant = dbContext.Restaurant.First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
-            await restaurantHandler.PatchRestaurant(new Restaurant() { 
+            await restaurantHandler.PatchRestaurant(new RestaurantPatchCommand()
+            {
                 RestaurantID = restaurant.RestaurantID,
                 RestaurantName = "Eric's Sorbet Palace"
             });
@@ -111,12 +106,13 @@ namespace ImitationOnlineOrderingTest
         public async Task TestDeleteRestaurant()
         {
 
-            var restaurant = await testInitializers.CreateRestaurant();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
+            var restaurant = dbContext.Restaurant.Where(r => r.RestaurantName == "DeleteRestaurant").First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
-            await restaurantHandler.DeleteRestaurant(restaurant.RestaurantID);            
+            Assert.IsNotNull(restaurant, "Restaurant must exist initially");
+
+            await restaurantHandler.DeleteRestaurant(restaurant.RestaurantID);
             Assert.IsNull(dbContext.Restaurant.Find(restaurant.RestaurantID));
 
         }
@@ -125,23 +121,17 @@ namespace ImitationOnlineOrderingTest
         public async Task TestDeleteRestaurantAndMenuItems()
         {
 
-            var restaurant = await testInitializers.CreateRestaurantWithMenuItems();
-
-            var dbContext = GetContext();
+            var dbContext = testingDatabase.CreateContext();
+            var restaurant = dbContext.Restaurant.Include(r => r.MenuItems).Where(r => r.RestaurantName == "DeleteRestaurantWithMenu").First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
+            Assert.IsNotNull(restaurant, "Restaurant must exist initially");
+            Assert.IsGreaterThan(0, restaurant.MenuItems?.Count ?? 0);
+
             await restaurantHandler.DeleteRestaurant(restaurant.RestaurantID);
+            Assert.IsNull(dbContext.Restaurant.Find(restaurant.RestaurantID));
             Assert.IsNull(dbContext.MenuItem.Find(restaurant.RestaurantID));
 
-        }
-
-        public static OnlineOrderingDb GetContext ()
-        {
-            return new OnlineOrderingDb(
-                new DbContextOptionsBuilder<OnlineOrderingDb>()
-                    .UseSqlServer("Server=DESKTOP-LREGU2K\\SQLEXPRESS;Trusted_Connection=True;TrustServerCertificate=True;Initial Catalog=ImitationOnlineOrdering")
-                    .Options
-            );
         }
 
     }
