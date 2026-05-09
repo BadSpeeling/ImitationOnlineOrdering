@@ -65,5 +65,19 @@ namespace ImitationOnlineOrdering.Database
             return await dbContext.Franchise.AnyAsync(e => e.FranchiseID == franchiseID);
         }
 
+        public async Task<bool> IsFranchiseOwner(int franchiseID, Guid franchiseOwnerUserID)
+        {
+            
+            var franchise = await GetFranchise(franchiseID);
+
+            if (franchise == null)
+            {
+                throw new Exception(franchiseID + " does not exist");
+            }
+
+            return franchise.FranchiseOwnerUserID.Equals(franchiseOwnerUserID);
+
+        }
+
     }
 }

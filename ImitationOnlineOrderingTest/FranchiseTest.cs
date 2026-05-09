@@ -96,5 +96,21 @@ namespace ImitationOnlineOrderingTest
 
         }
 
+        [TestMethod]
+        public async Task TestIsFranchiseOwner()
+        {
+
+            var dbContext = testingDatabase.CreateContext();
+            var franchise = dbContext.Franchise.Where(f => f.FranchiseOwnerUserID == authenticatedIdentity.GetUserID()).First();
+
+            Assert.IsNotNull(franchise);
+
+            var franchiseHandler = new FranchiseDbHandler(dbContext);
+
+            Assert.IsTrue(await franchiseHandler.IsFranchiseOwner(franchise.FranchiseID, authenticatedIdentity.GetUserID()));
+            Assert.IsFalse(await franchiseHandler.IsFranchiseOwner(franchise.FranchiseID, Guid.NewGuid()));
+
+        }
+
     }
 }

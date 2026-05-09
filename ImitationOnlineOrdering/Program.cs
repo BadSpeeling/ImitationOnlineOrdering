@@ -66,7 +66,27 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Franchise}/{action=Index}/{id?}");
+    name: "CreateRestaurant",
+    pattern: "Restaurant/Create/{franchiseID}",
+    defaults: new { controller = "Restaurant", action = "Create" }
+);
+
+app.MapControllerRoute(
+    name: "FranchiseDefault",
+    pattern: "Franchise/{action=Index}/{id?}",
+    defaults: new { controller = "Franchise" }
+);
+
+app.MapControllerRoute(
+    name: "Home",
+    pattern: "Home/{action=Index}",
+    defaults: new { controller = "Home" }
+);
+
+app.MapControllerRoute(
+    name: "Initial",
+    pattern: "",
+    defaults: new { controller = "Franchise", action = "Index" }
+);
 
 app.Run();

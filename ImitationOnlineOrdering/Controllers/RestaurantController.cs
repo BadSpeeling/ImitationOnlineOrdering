@@ -16,11 +16,13 @@ namespace ImitationOnlineOrdering.Controllers
     public class RestaurantController : Controller
     {
         private readonly RestaurantDbHandler RestaurantHandler;
+        private readonly FranchiseDbHandler FranchiseHandler;
         private readonly IIdentity Identity;
 
-        public RestaurantController(RestaurantDbHandler restaurantHandler, IIdentity identity)
+        public RestaurantController(RestaurantDbHandler restaurantHandler, FranchiseDbHandler franchiseHandler, IIdentity identity)
         {
             RestaurantHandler = restaurantHandler;
+            FranchiseHandler = franchiseHandler;
             Identity = identity;
         }
 
@@ -69,23 +71,31 @@ namespace ImitationOnlineOrdering.Controllers
             return View(restaurant);            
         }
 
-        // GET: Restaurant/Create
+        // GET: Restaurant/Create/{franchiseID}
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int franchiseID)
         {
             return View();
         }
 
-        // POST: Restaurant/Create
+        // POST: Restaurant/Create/{franchiseID}
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Create([Bind("RestaurantName")] Restaurant restaurant)
+        public async Task<IActionResult> Create(int franchiseID, [Bind("RestaurantName")] Restaurant restaurant)
         {
 
-            restaurant.RestaurantManagerUserID = Identity.GetUserID();
+            var authenticatedUserID = Identity.GetUserID();
+
+            if (!await FranchiseHandler.IsFranchiseOwner(franchiseID, authenticatedUserID))
+            {
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
+            restaurant.FranchiseID = franchiseID;
+            restaurant.RestaurantManagerUserID = authenticatedUserID;
 
             if (ModelState.IsValid)
             {
