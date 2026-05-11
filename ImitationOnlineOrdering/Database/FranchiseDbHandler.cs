@@ -20,7 +20,7 @@ namespace ImitationOnlineOrdering.Database
 
         public async Task<Franchise?> GetFranchise(int id)
         {
-            return await dbContext.Franchise.FirstOrDefaultAsync(f => f.FranchiseID == id);
+            return await dbContext.Franchise.Include(f => f.Restaurants).FirstOrDefaultAsync(f => f.FranchiseID == id);
         }
 
         public async Task PostFranchise(Franchise franchise)

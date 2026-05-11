@@ -97,6 +97,22 @@ namespace ImitationOnlineOrderingTest
         }
 
         [TestMethod]
+        public async Task TestFranchiseLoadsRestaurants()
+        {
+
+            var dbContext = testingDatabase.CreateContext();
+            var franchiseID = dbContext.Franchise.Where(f => f.FranchiseName == "Blog1").FirstOrDefault()?.FranchiseID ?? 0;
+
+            Assert.AreNotEqual(0, franchiseID, "Franchise lookup must work");
+
+            var franchiseHandler = new FranchiseDbHandler(dbContext);
+
+            var franchise = await franchiseHandler.GetFranchise(franchiseID);
+            Assert.IsGreaterThan(0, franchise?.Restaurants?.Count ?? 0, "Included Restaurants must be more than 0");
+
+        }
+
+        [TestMethod]
         public async Task TestIsFranchiseOwner()
         {
 

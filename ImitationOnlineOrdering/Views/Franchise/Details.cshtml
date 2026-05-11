@@ -17,6 +17,42 @@
             @Html.DisplayFor(model => model.FranchiseName)
         </dd>
     </dl>
+
+    @if (Model.Restaurants == null || Model.Restaurants.Count == 0) {
+        <div>This franchise currently has no restaurants!</div>
+    }
+    else {
+
+        <h3>Restaurants</h3>
+        <div>
+            @{
+                var exampleRestaurant = Model.Restaurants.First();
+            } 
+            <div class="row">
+                <div class="col-2">
+                    @Html.DisplayNameFor(model => exampleRestaurant.RestaurantName)
+                </div>
+                <div class="col-10">
+
+                </div>
+            </div>
+
+            @foreach (var restaurant in Model.Restaurants) {
+                <div class="row">
+                    <div class="col-2">
+                        @Html.DisplayFor(model => restaurant.RestaurantName)
+                    </div>
+                    <div class="col-10">
+                        <a asp-controller="Restaurant" asp-action="Edit" asp-route-id="@restaurant.RestaurantID">Edit</a> |
+                        <a asp-controller="Restaurant" asp-action="Details" asp-route-id="@restaurant.RestaurantID">Details</a> |
+                        <a asp-controller="Restaurant" asp-action="Delete" asp-route-id="@restaurant.RestaurantID">Delete</a>
+                    </div>
+                </div>
+            }
+        </div>
+
+    }
+
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.FranchiseID">Edit</a> |

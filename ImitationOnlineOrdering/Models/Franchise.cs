@@ -9,6 +9,7 @@ namespace ImitationOnlineOrdering.Models
         [Display(Name = "Franchise Name")]
         public required string FranchiseName { get; set; }
         public Guid? FranchiseOwnerUserID { get; set; }
+        public ICollection<Restaurant>? Restaurants { get; set; }
 
     }
 }
