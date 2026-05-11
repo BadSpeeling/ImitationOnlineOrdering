@@ -72,6 +72,24 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
+    name: "EditRestaurant",
+    pattern: "Restaurant/Edit/{id}",
+    defaults: new { controller = "Restaurant", action = "Edit" }
+);
+
+app.MapControllerRoute(
+    name: "DetailsRestaurant",
+    pattern: "Restaurant/Details/{id}",
+    defaults: new { controller = "Restaurant", action = "Details" }
+);
+
+app.MapControllerRoute(
+    name: "DeleteRestaurant",
+    pattern: "Restaurant/Delete/{id}",
+    defaults: new { controller = "Restaurant", action = "Delete" }
+);
+
+app.MapControllerRoute(
     name: "FranchiseDefault",
     pattern: "Franchise/{action=Index}/{id?}",
     defaults: new { controller = "Franchise" }

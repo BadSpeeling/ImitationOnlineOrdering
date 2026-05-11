@@ -45,27 +45,18 @@ namespace ImitationOnlineOrdering.Controllers
 
         }
         // GET: Restaurant/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            Restaurant? restaurant;
+            Restaurant restaurant;
 
             try
             {
-                restaurant = await RestaurantHandler.GetRestaurant(id.Value);
+                restaurant = await RestaurantHandler.GetRestaurant(id);
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-            }
-
-            if (restaurant == null)
-            {
-                return NotFound();
             }
 
             return View(restaurant);            
@@ -108,36 +99,29 @@ namespace ImitationOnlineOrdering.Controllers
                     return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = restaurant.RestaurantID });
             }
             return View(restaurant);
         }
 
         // GET: Restaurant/Edit/5
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            Restaurant? restaurant;
+            Restaurant restaurant;
 
             try
             { 
-                restaurant = await RestaurantHandler.GetRestaurant(id.Value);
+                restaurant = await RestaurantHandler.GetRestaurant(id);
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            if (restaurant == null)
-            {
-                return NotFound();
-            }
             return View(restaurant);
+
         }
 
         // POST: Restaurant/Edit/5
@@ -170,37 +154,33 @@ namespace ImitationOnlineOrdering.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception)
+                {
+                    return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                }
+                return RedirectToAction(nameof(Details), new { id = restaurant.RestaurantID });
             }
             return View(restaurant);
         }
 
         // GET: Restaurant/Delete/5
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            Restaurant? restaurant;
+            Restaurant restaurant;
 
             try
             {
-                restaurant = await RestaurantHandler.GetRestaurant(id.Value);
+                restaurant = await RestaurantHandler.GetRestaurant(id);
             }
             catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            if (restaurant == null)
-            {
-                return NotFound();
-            }
-
             return View(restaurant);
+
         }
 
         // POST: Restaurant/Delete/5
@@ -210,8 +190,11 @@ namespace ImitationOnlineOrdering.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
+            int restaurantID;
+
             try
             {
+                restaurantID = (await RestaurantHandler.GetRestaurant(id)).RestaurantID;
                 await RestaurantHandler.DeleteRestaurant(id);
             }
             catch (Exception ex)
@@ -219,7 +202,8 @@ namespace ImitationOnlineOrdering.Controllers
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), "Franchise", new { id = restaurantID }) ;
+        
         }
 
     }

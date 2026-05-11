@@ -65,6 +65,19 @@ namespace ImitationOnlineOrderingTest
             var foundRestaurant = await restaurantHandler.GetRestaurant(restaurant.RestaurantID);
             Assert.IsNotNull(foundRestaurant);
 
+            bool exceptionOccured = false;
+
+            try
+            {
+                await restaurantHandler.GetRestaurant(-1);
+            }
+            catch (Exception ex)
+            {
+                exceptionOccured = true;
+            }
+
+            Assert.IsTrue(exceptionOccured, "An error should occur if a non-existing RestaurantID is given");
+
         }
 
         [TestMethod]

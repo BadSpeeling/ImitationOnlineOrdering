@@ -18,9 +18,9 @@ namespace ImitationOnlineOrdering.Database
             return await dbContext.Restaurant.ToListAsync();
         }
 
-        public async Task<Restaurant?> GetRestaurant (int id)
+        public async Task<Restaurant> GetRestaurant (int id)
         {
-            return await dbContext.Restaurant.Include(r => r.MenuItems).FirstOrDefaultAsync(r => r.RestaurantID == id);
+            return await dbContext.Restaurant.Include(r => r.MenuItems).FirstAsync(r => r.RestaurantID == id);
         }
 
         public async Task PostRestaurant (Restaurant restaurant)
@@ -34,11 +34,14 @@ namespace ImitationOnlineOrdering.Database
         public async Task PatchRestaurant (RestaurantPatchCommand restaurant) 
         {
 
-            var efRestaurant = await GetRestaurant(restaurant.RestaurantID);
-
-            if (efRestaurant == null)
+            Restaurant efRestaurant;
+            
+            try { 
+                efRestaurant = await GetRestaurant(restaurant.RestaurantID);
+            }
+            catch (Exception ex)
             {
-                throw new Exception($"Cannot update Restaurant {restaurant.RestaurantID} that does not exist");
+                throw new Exception($"Could not get Restaurant {restaurant.RestaurantID} for PATCH: {ex.Message}");
             }
 
             if (restaurant.RestaurantName != null && !restaurant.RestaurantName.Equals(efRestaurant.RestaurantName))
@@ -53,11 +56,14 @@ namespace ImitationOnlineOrdering.Database
         public async Task DeleteRestaurant (int restaurantID)
         {
 
-            var restaurant = await GetRestaurant(restaurantID);
+            Restaurant restaurant;
 
-            if (restaurant == null)
+            try { 
+                restaurant = await GetRestaurant(restaurantID);
+            }
+            catch (Exception ex)
             {
-                throw new Exception(restaurantID + " does not exist");
+                throw new Exception($"Could not get Restaurant {restaurantID} for DELETE: {ex.Message}");
             }
 
             dbContext.Restaurant.Remove(restaurant);
