@@ -3,6 +3,10 @@
 	[RestaurantName] [nvarchar](200) NOT NULL,
 	[FranchiseID] [int] NOT NULL,
 	[RestaurantManagerUserID] [uniqueidentifier] NULL,
+	[StreetAddress] [nvarchar](100) NOT NULL,
+	[City] [nvarchar](50) NOT NULL,
+	[State] [char](2) NOT NULL,
+	[Zip] [char](5) NOT NULL,
 	CONSTRAINT [PK_Restuarant] PRIMARY KEY CLUSTERED 
 	(
 		[RestaurantID] ASC

@@ -43,7 +43,11 @@ namespace ImitationOnlineOrderingTest
                 RestaurantName = "Eric's Icecream Palace",
                 RestaurantManagerUserID = Guid.NewGuid(),
                 FranchiseID = franchise.FranchiseID,
-                Franchise = franchise,
+                Franchise = franchise,                
+                StreetAddress = "1201 Wilson Blvd",
+                State = "VA",
+                Zip = "22201",
+                City = "Arlington"
             };
 
             await restaurantHandler.PostRestaurant(restaurant);
@@ -64,6 +68,11 @@ namespace ImitationOnlineOrderingTest
 
             var foundRestaurant = await restaurantHandler.GetRestaurant(restaurant.RestaurantID);
             Assert.IsNotNull(foundRestaurant);
+
+            Assert.AreEqual(restaurant.StreetAddress, foundRestaurant.StreetAddress);
+            Assert.AreEqual(restaurant.State, foundRestaurant.State);
+            Assert.AreEqual(restaurant.City, foundRestaurant.City);
+            Assert.AreEqual(restaurant.Zip, foundRestaurant.Zip);
 
             bool exceptionOccured = false;
 
