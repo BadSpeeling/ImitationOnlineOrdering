@@ -9,7 +9,7 @@ using System.Text;
 public class TestingDatabase
 {
 
-    private readonly string ConnectionString = "Server=np:\\\\.\\pipe\\LOCALDB#9F82E875\\tsql\\query;Trusted_Connection=True;TrustServerCertificate=True;Initial Catalog=ImitationOnlineOrderingTest";
+    private readonly string ConnectionString = "Server=np:\\\\.\\pipe\\LOCALDB#EE27A6C8\\tsql\\query;TrustServerCertificate=True;Initial Catalog=ImitationOnlineOrderingTest";
 
     private static readonly object _lock = new();
     private static bool _databaseInitialized = false;
@@ -37,9 +37,9 @@ public class TestingDatabase
                     );
                     context.SaveChanges();
 
-                    var restaurant = new Restaurant { RestaurantName = "Eric's Restaurant", RestaurantManagerUserID = authenticatedIdentity.GetUserID(), FranchiseID = franchise.FranchiseID, Franchise = franchise };
-                    var deleteRestaurant = new Restaurant { RestaurantName = "DeleteRestaurant", RestaurantManagerUserID = authenticatedIdentity.GetUserID(), FranchiseID = franchise.FranchiseID, Franchise = franchise };
-                    var deleteRestaurantWithMenu = new Restaurant { RestaurantName = "DeleteRestaurantWithMenu", RestaurantManagerUserID = authenticatedIdentity.GetUserID(), FranchiseID = franchise.FranchiseID, Franchise = franchise };
+                    var restaurant = new Restaurant { RestaurantManagerUserID = authenticatedIdentity.GetUserID(), FranchiseID = franchise.FranchiseID, Franchise = franchise, StreetAddress = "1 Main St.", State = "MD", Zip = "99999", City = "Springfield" };
+                    var deleteRestaurant = new Restaurant { RestaurantManagerUserID = authenticatedIdentity.GetUserID(), FranchiseID = franchise.FranchiseID, Franchise = franchise, StreetAddress = "1 Delete St.", State = "MD", Zip = "99999", City = "Springfield" };
+                    var deleteRestaurantWithMenu = new Restaurant { RestaurantManagerUserID = authenticatedIdentity.GetUserID(), FranchiseID = franchise.FranchiseID, Franchise = franchise, StreetAddress = "1 Delete Menu St.", State = "MD", Zip = "99999", City = "Springfield" };
 
                     context.AddRange(
                         restaurant,

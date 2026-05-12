@@ -40,7 +40,6 @@ namespace ImitationOnlineOrderingTest
             var franchise = dbContext.Franchise.First();
             var restaurant = new Restaurant()
             {
-                RestaurantName = "Eric's Icecream Palace",
                 RestaurantManagerUserID = Guid.NewGuid(),
                 FranchiseID = franchise.FranchiseID,
                 Franchise = franchise,                
@@ -101,6 +100,7 @@ namespace ImitationOnlineOrderingTest
 
             var efRestaurant = await restaurantHandler.GetRestaurant(menuItem.RestaurantID);
             Assert.IsNotNull(efRestaurant?.MenuItems?.FirstOrDefault());
+            Assert.IsNotNull(efRestaurant.Franchise);
 
         }
 
@@ -115,11 +115,11 @@ namespace ImitationOnlineOrderingTest
             await restaurantHandler.PatchRestaurant(new RestaurantPatchCommand()
             {
                 RestaurantID = restaurant.RestaurantID,
-                RestaurantName = "Eric's Sorbet Palace"
+                StreetAddress = "1201 L St."
             });
 
             var efRestaurant = dbContext.Restaurant.Find(restaurant.RestaurantID);
-            Assert.AreEqual("Eric's Sorbet Palace", efRestaurant?.RestaurantName);
+            Assert.AreEqual("1201 L St.", efRestaurant?.StreetAddress);
             Assert.IsNotNull(efRestaurant?.RestaurantManagerUserID);
 
         }
@@ -129,7 +129,7 @@ namespace ImitationOnlineOrderingTest
         {
 
             var dbContext = testingDatabase.CreateContext();
-            var restaurant = dbContext.Restaurant.Where(r => r.RestaurantName == "DeleteRestaurant").First();
+            var restaurant = dbContext.Restaurant.Where(r => r.StreetAddress == "1 Delete St.").First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
             Assert.IsNotNull(restaurant, "Restaurant must exist initially");
@@ -144,7 +144,7 @@ namespace ImitationOnlineOrderingTest
         {
 
             var dbContext = testingDatabase.CreateContext();
-            var restaurant = dbContext.Restaurant.Include(r => r.MenuItems).Where(r => r.RestaurantName == "DeleteRestaurantWithMenu").First();
+            var restaurant = dbContext.Restaurant.Include(r => r.MenuItems).Where(r => r.StreetAddress == "1 Delete Menu St.").First();
             var restaurantHandler = new RestaurantDbHandler(dbContext);
 
             Assert.IsNotNull(restaurant, "Restaurant must exist initially");

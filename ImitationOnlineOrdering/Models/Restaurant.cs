@@ -7,7 +7,6 @@ namespace ImitationOnlineOrdering.Models
 
         public int RestaurantID { get; set; }
         [Display(Name = "Restaurant Name")]
-        public required string RestaurantName { get; set; }        
         public Guid? RestaurantManagerUserID { get; set; }
         public int FranchiseID { get; set; }
 

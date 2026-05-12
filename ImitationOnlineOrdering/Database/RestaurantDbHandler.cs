@@ -20,7 +20,10 @@ namespace ImitationOnlineOrdering.Database
 
         public async Task<Restaurant> GetRestaurant (int id)
         {
-            return await dbContext.Restaurant.Include(r => r.MenuItems).FirstAsync(r => r.RestaurantID == id);
+            return await dbContext.Restaurant
+                .Include(r => r.Franchise)
+                .Include(r => r.MenuItems)
+                .FirstAsync(r => r.RestaurantID == id);
         }
 
         public async Task PostRestaurant (Restaurant restaurant)
@@ -44,10 +47,6 @@ namespace ImitationOnlineOrdering.Database
                 throw new Exception($"Could not get Restaurant {restaurant.RestaurantID} for PATCH: {ex.Message}");
             }
 
-            if (restaurant.RestaurantName != null && !restaurant.RestaurantName.Equals(efRestaurant.RestaurantName))
-            {
-                efRestaurant.RestaurantName = restaurant.RestaurantName;
-            }
 
             if (restaurant.StreetAddress != null && !restaurant.StreetAddress.Equals(efRestaurant.StreetAddress))
             {

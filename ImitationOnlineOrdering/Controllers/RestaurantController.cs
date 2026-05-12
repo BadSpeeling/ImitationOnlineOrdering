@@ -78,7 +78,7 @@ namespace ImitationOnlineOrdering.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Create(int franchiseID, [Bind("RestaurantName,StreetAddress,City,State,Zip")] Restaurant restaurant)
+        public async Task<IActionResult> Create(int franchiseID, [Bind("StreetAddress,City,State,Zip")] Restaurant restaurant)
         {
 
             var authenticatedUserID = Identity.GetUserID();
@@ -103,7 +103,7 @@ namespace ImitationOnlineOrdering.Controllers
                 }
 
                 return RedirectToAction(nameof(Details), new { id = restaurant.RestaurantID });
-            }
+            }            
             return View(restaurant);
         }
 
@@ -133,7 +133,7 @@ namespace ImitationOnlineOrdering.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName,StreetAddress,City,State,Zip")] Restaurant restaurant)
+        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,StreetAddress,City,State,Zip")] Restaurant restaurant)
         {
             if (id != restaurant.RestaurantID)
             {
