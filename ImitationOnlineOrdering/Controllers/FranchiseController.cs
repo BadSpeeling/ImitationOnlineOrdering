@@ -1,3 +1,4 @@
+using AutoMapper;
 using ImitationOnlineOrdering.Database;
 using ImitationOnlineOrdering.Infrastructure;
 using ImitationOnlineOrdering.Models;
@@ -12,11 +13,13 @@ namespace ImitationOnlineOrdering.Controllers
     {
         private readonly FranchiseDbHandler FranchiseHandler;
         private readonly IIdentity Identity;
+        private readonly IMapper Mapper;
 
-        public FranchiseController(FranchiseDbHandler franchiseHandler, IIdentity identity)
+        public FranchiseController(FranchiseDbHandler franchiseHandler, IIdentity identity, IMapper mapper)
         {
             FranchiseHandler = franchiseHandler;
             Identity = identity;
+            Mapper = mapper;
         }
 
         // GET: Franchise
@@ -136,10 +139,7 @@ namespace ImitationOnlineOrdering.Controllers
             {
                 try
                 {
-                    await FranchiseHandler.PatchFranchise(new FranchisePatchCommand() { 
-                        FranchiseID = franchise.FranchiseID,
-                        FranchiseName = franchise.FranchiseName,
-                    });
+                    await FranchiseHandler.PatchFranchise(Mapper.Map<FranchisePatchCommand>(franchise));
                 }
                 catch (DbUpdateConcurrencyException)
                 {

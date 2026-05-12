@@ -1,12 +1,13 @@
+using ImitationOnlineOrdering;
+using ImitationOnlineOrdering.Database;
 using ImitationOnlineOrdering.Infrastructure;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.EntityFrameworkCore;
-using ImitationOnlineOrdering.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,8 @@ builder.Services.AddControllersWithViews(options =>
         .Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 }).AddMicrosoftIdentityUI();
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 

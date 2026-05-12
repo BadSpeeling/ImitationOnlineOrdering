@@ -7,7 +7,7 @@ namespace ImitationOnlineOrdering.Database
     {
 
         private OnlineOrderingDb dbContext;
-
+        
         public RestaurantDbHandler (OnlineOrderingDb dbContext) 
         {
             this.dbContext = dbContext;
@@ -48,7 +48,27 @@ namespace ImitationOnlineOrdering.Database
             {
                 efRestaurant.RestaurantName = restaurant.RestaurantName;
             }
-            
+
+            if (restaurant.StreetAddress != null && !restaurant.StreetAddress.Equals(efRestaurant.StreetAddress))
+            {
+                efRestaurant.StreetAddress = restaurant.StreetAddress;
+            }
+
+            if (restaurant.City != null && !restaurant.City.Equals(efRestaurant.City))
+            {
+                efRestaurant.City = restaurant.City;
+            }
+
+            if (restaurant.State != null && !restaurant.State.Equals(efRestaurant.State))
+            {
+                efRestaurant.State = restaurant.State;
+            }
+
+            if (restaurant.Zip != null && !restaurant.Zip.Equals(efRestaurant.Zip))
+            {
+                efRestaurant.Zip = restaurant.Zip;
+            }
+
             await dbContext.SaveChangesAsync();
 
         }

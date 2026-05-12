@@ -1,4 +1,5 @@
-﻿using ImitationOnlineOrdering.Database;
+﻿using AutoMapper;
+using ImitationOnlineOrdering.Database;
 using ImitationOnlineOrdering.Infrastructure;
 using ImitationOnlineOrdering.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -18,12 +19,14 @@ namespace ImitationOnlineOrdering.Controllers
         private readonly RestaurantDbHandler RestaurantHandler;
         private readonly FranchiseDbHandler FranchiseHandler;
         private readonly IIdentity Identity;
+        private readonly IMapper Mapper;
 
-        public RestaurantController(RestaurantDbHandler restaurantHandler, FranchiseDbHandler franchiseHandler, IIdentity identity)
+        public RestaurantController(RestaurantDbHandler restaurantHandler, FranchiseDbHandler franchiseHandler, IIdentity identity, IMapper mapper)
         {
             RestaurantHandler = restaurantHandler;
             FranchiseHandler = franchiseHandler;
             Identity = identity;
+            Mapper = mapper;
         }
 
         // GET: Restaurant
@@ -75,7 +78,7 @@ namespace ImitationOnlineOrdering.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Create(int franchiseID, [Bind("RestaurantName")] Restaurant restaurant)
+        public async Task<IActionResult> Create(int franchiseID, [Bind("RestaurantName,StreetAddress,City,State,Zip")] Restaurant restaurant)
         {
 
             var authenticatedUserID = Identity.GetUserID();
@@ -130,7 +133,7 @@ namespace ImitationOnlineOrdering.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = AppRoles.AuthorizationPolicies.AssignmentToFranchiseOwnerRequired)]
-        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName")] RestaurantPatchCommand restaurant)
+        public async Task<IActionResult> Edit(int id, [Bind("RestaurantID,RestaurantName,StreetAddress,City,State,Zip")] Restaurant restaurant)
         {
             if (id != restaurant.RestaurantID)
             {
@@ -141,7 +144,7 @@ namespace ImitationOnlineOrdering.Controllers
             {
                 try
                 {
-                    await RestaurantHandler.PatchRestaurant(restaurant);
+                    await RestaurantHandler.PatchRestaurant(Mapper.Map<RestaurantPatchCommand>(restaurant));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
