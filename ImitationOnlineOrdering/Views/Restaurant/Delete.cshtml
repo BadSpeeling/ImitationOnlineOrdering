@@ -12,16 +12,16 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RestaurantName)
+            @Html.DisplayNameFor(model => model.Franchise.FranchiseName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RestaurantName)
+            @Html.DisplayFor(model => model.Franchise.FranchiseName)
         </dd>
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="RestaurantID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-controller="Franchise" asp-action="Details" asp-route-id="@Model.FranchiseID">Back to List</a>
     </form>
 </div>

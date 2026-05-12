@@ -18,6 +18,10 @@
         </dd>
     </dl>
 
+    <dl class="row">
+        <a asp-controller="Restaurant" asp-action="Create" asp-route-franchiseID="@Model.FranchiseID">Create new Restaurant</a>
+    </dl>
+
     @if (Model.Restaurants == null || Model.Restaurants.Count == 0) {
         <div>This franchise currently has no restaurants!</div>
     }
@@ -25,14 +29,20 @@
 
         <h3>Restaurants</h3>
         <div>
-            @{
-                var exampleRestaurant = Model.Restaurants.First();
-            } 
-            <div class="row">
+            <div style="border-bottom: 1px solid gray; font-weight: bold; margin: 2px" class="row">
                 <div class="col-2">
-                    @Html.DisplayNameFor(model => exampleRestaurant.RestaurantName)
+                    @Html.DisplayNameFor(model => model.Restaurants!.First().StreetAddress)
                 </div>
-                <div class="col-10">
+                <div class="col-2">
+                    @Html.DisplayNameFor(model => model.Restaurants!.First().City)
+                </div>
+                <div class="col-1">
+                    @Html.DisplayNameFor(model => model.Restaurants!.First().State)
+                </div>
+                <div class="col-1">
+                    @Html.DisplayNameFor(model => model.Restaurants!.First().Zip)
+                </div>
+                <div class="col-6">
 
                 </div>
             </div>
@@ -40,9 +50,18 @@
             @foreach (var restaurant in Model.Restaurants) {
                 <div class="row">
                     <div class="col-2">
-                        @Html.DisplayFor(model => restaurant.RestaurantName)
+                        @Html.DisplayFor(model => restaurant.StreetAddress)
                     </div>
-                    <div class="col-10">
+                    <div class="col-2">
+                        @Html.DisplayFor(model => restaurant.City)
+                    </div>
+                    <div class="col-1">
+                        @Html.DisplayFor(model => restaurant.State)
+                    </div>
+                    <div class="col-1">
+                        @Html.DisplayFor(model => restaurant.Zip)
+                    </div>
+                    <div class="col-6">
                         <a asp-controller="Restaurant" asp-action="Edit" asp-route-id="@restaurant.RestaurantID">Edit</a> |
                         <a asp-controller="Restaurant" asp-action="Details" asp-route-id="@restaurant.RestaurantID">Details</a> |
                         <a asp-controller="Restaurant" asp-action="Delete" asp-route-id="@restaurant.RestaurantID">Delete</a>
