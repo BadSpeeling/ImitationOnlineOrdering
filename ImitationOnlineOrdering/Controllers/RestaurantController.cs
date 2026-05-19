@@ -193,11 +193,11 @@ namespace ImitationOnlineOrdering.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            int restaurantID;
+            int franchiseID;
 
             try
             {
-                restaurantID = (await RestaurantHandler.GetRestaurant(id)).RestaurantID;
+                franchiseID = (await RestaurantHandler.GetRestaurant(id)).FranchiseID;
                 await RestaurantHandler.DeleteRestaurant(id);
             }
             catch (Exception ex)
@@ -205,7 +205,7 @@ namespace ImitationOnlineOrdering.Controllers
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            return RedirectToAction(nameof(Details), "Franchise", new { id = restaurantID }) ;
+            return RedirectToAction(nameof(Details), "Franchise", new { id = franchiseID }) ;
         
         }
 
